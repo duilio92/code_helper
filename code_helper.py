@@ -1,30 +1,48 @@
-# myextension.py
+
+from IPython.core.magic import Magics, magics_class, line_magic
+
+@magics_class
+class CodeHelperMagics(Magics):
+    # dont need an init atm
+    #def __init__(self, *a, **kw):
+    #    super(CodeHelperMagics, self).__init__(*a, **kw)
+    #
+    @line_magic
+    def last_history(self, parameter_s=''):
+        print("last history was called")
+        ip = self.shell.get_ipython()
+        history_database = ip.history_manager.db
+        last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
+        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM
+        import pdb; pdb.set_trace()
+
 
 def load_ipython_extension(ipython):
     # The `ipython` argument is the currently active `InteractiveShell`
     # instance, which can be used in any way. This allows you to register
     # new magics or aliases, for example.
+    code_helper = CodeHelperMagics(ipython)
+    ipython.register_magics(code_helper)
     print("Code Helper says: Hello")
-    import pdb; pdb.set_trace()
     # this only says the datetime of last session
-    IPython.core.history.HistoryAccessor(profile='default') 
-    from IPython.core.history import HistoryAccessor
-    dir(HistoryAccessor)
-    HistoryAccesor(profile='default')
-    HistoryAccessor(profile='default')
-    ha = HistoryAccessor(profile='default')
-    history
-    hist
-    %history
-    ha
-    dir(ha)
-    ha.get_tail()
-    ha.get_session_info()
-    ha.get_session_info(100)
-    ha.get_session_info(1)
-    print(ha.get_session_info(1))
-    ha.get_last_session_id()
-    print(ha.get_session_info(151))
+    # IPython.core.history.HistoryAccessor(profile='default') 
+    # from IPython.core.history import HistoryAccessor
+    # dir(HistoryAccessor)
+    # HistoryAccesor(profile='default')
+    # HistoryAccessor(profile='default')
+    # ha = HistoryAccessor(profile='default')
+    # history
+    # hist
+    # %history
+    # ha
+    # dir(ha)
+    # ha.get_tail()
+    # ha.get_session_info()
+    # ha.get_session_info(100)
+    # ha.get_session_info(1)
+    # print(ha.get_session_info(1))
+    # ha.get_last_session_id()
+    # print(ha.get_session_info(151))
 
 
 def unload_ipython_extension(ipython):
