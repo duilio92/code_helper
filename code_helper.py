@@ -1,6 +1,6 @@
 
 from IPython.core.magic import Magics, magics_class, line_magic
-
+import os
 @magics_class
 class CodeHelperMagics(Magics):
     # dont need an init atm
@@ -9,14 +9,23 @@ class CodeHelperMagics(Magics):
     #
     @line_magic
     def last_history(self, parameter_s=''):
-        print("last history was called")
         ip = self.shell.get_ipython()
-        history_database = ip.history_manager.db
         last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
-        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM
+        #for x in ip.history_manager.get_tail(): print x
+        #get the before last session id, it is not simply substracting one, it might be better to use the history accesor rather than  parsing strings.
+        session_prefix = str(last_session_id)+('/')
         import pdb; pdb.set_trace()
-
-
+        #history_database = ip.history_manager.db
+        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter
+        histvar = os.popen("ipython -c 'history -g'").read()
+        histvar2 = histvar.split(':')
+        histvar3 = [x.split('\n') for x in histvar2]
+        last_history = [x for x in histvar3 if any(y.startswith(session_prefix) for y in x)]
+        if last_history:
+            for x in last_history:
+                print(x[0])
+        else:
+            print("No last history was found for your session.")
 def load_ipython_extension(ipython):
     # The `ipython` argument is the currently active `InteractiveShell`
     # instance, which can be used in any way. This allows you to register
