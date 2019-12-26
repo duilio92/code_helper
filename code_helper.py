@@ -4,7 +4,7 @@ import os
 @magics_class
 class CodeHelperMagics(Magics):
     # dont need an init atm
-    #def __init__(self, *a, **kw):
+    # def __init__(self, *a, **kw):
     #    super(CodeHelperMagics, self).__init__(*a, **kw)
     def _get_penultimate_session_id(self, ipython):
         """Get the penultimate session id using the history manager."""
@@ -12,29 +12,31 @@ class CodeHelperMagics(Magics):
         for x in ipython.history_manager.get_tail(n=100):
             if x[0] > max1:
                 max1 = x[0]
-                max2 =  max1
+                max2 = max1
             elif x[0] > max2:
                 max2 = x[0]
         return max2
+
     @line_magic
     def last_history(self, parameter_s=''):
         ip = self.shell.get_ipython()
-        #last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
+        # last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
         penultimate_session_id = self._get_penultimate_session_id(ip)
-        session_prefix = str(penultimate_session_id)+('/')
         import pdb; pdb.set_trace()
-        #history_database = ip.history_manager.db
-        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter,
+        session_prefix = str(penultimate_session_id)+('/')
+        # history_database = ip.history_manager.db
+        # TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter,
         # or use the history accesor as in the _get_penultimate_session_id method
-        histvar = os.popen("ipython -c 'history -g'").read()
-        histvar2 = histvar.split(':')
-        histvar3 = [x.split('\n') for x in histvar2]
-        last_history = [x for x in histvar3 if any(y.startswith(session_prefix) for y in x)]
-        if last_history:
-            for x in last_history:
+        h = os.popen("ipython -c 'history -g'").read().split(':')
+        h_3 = [x.split('\n') for x in h]
+        hist = [x for x in h_3 if any(y.startswith(session_prefix) for y in x)]
+        if hist:
+            for x in hist:
                 print(x[0])
         else:
             print("No last history was found for your session.")
+
+
 def load_ipython_extension(ipython):
     # The `ipython` argument is the currently active `InteractiveShell`
     # instance, which can be used in any way. This allows you to register
