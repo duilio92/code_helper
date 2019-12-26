@@ -6,17 +6,26 @@ class CodeHelperMagics(Magics):
     # dont need an init atm
     #def __init__(self, *a, **kw):
     #    super(CodeHelperMagics, self).__init__(*a, **kw)
-    #
+    def _get_penultimate_session_id(self, ipython):
+        """Get the penultimate session id using the history manager."""
+        max1, max2 = 0, 0
+        for x in ipython.history_manager.get_tail(n=100):
+            if x[0] > max1:
+                max1 = x[0]
+                max2 =  max1
+            elif x[0] > max2:
+                max2 = x[0]
+        return max2
     @line_magic
     def last_history(self, parameter_s=''):
         ip = self.shell.get_ipython()
-        last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
-        #for x in ip.history_manager.get_tail(): print x
-        #get the before last session id, it is not simply substracting one, it might be better to use the history accesor rather than  parsing strings.
-        session_prefix = str(last_session_id)+('/')
+        #last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
+        penultimate_session_id = self._get_penultimate_session_id(ip)
+        session_prefix = str(penultimate_session_id)+('/')
         import pdb; pdb.set_trace()
         #history_database = ip.history_manager.db
-        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter
+        #TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter,
+        # or use the history accesor as in the _get_penultimate_session_id method
         histvar = os.popen("ipython -c 'history -g'").read()
         histvar2 = histvar.split(':')
         histvar3 = [x.split('\n') for x in histvar2]
