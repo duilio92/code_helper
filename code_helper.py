@@ -11,19 +11,21 @@ class CodeHelperMagics(Magics):
         max1, max2 = 0, 0
         for x in ipython.history_manager.get_tail(n=100):
             if x[0] > max1:
+                alt = max1
                 max1 = x[0]
-                max2 = max1
+                max2 = alt
             elif x[0] > max2:
                 max2 = x[0]
+        #print("max1 is:{} and max2 is:{} ".format(max1, max2))
         return max2
 
     def _get_history_for_id(self, ipython, id):
-        import pdb; pdb.set_trace()
+        #import pdb; pdb.set_trace()
         """Get the history commands for the given id. """
         input_lines = []
-        print(id)
+        #print(id)
         for x in ipython.history_manager.get_tail(n=100):
-            print(x)
+            #print(x)
             if x[0] == id:
                 input_lines.append(x[2])
         if input_lines:
@@ -31,16 +33,14 @@ class CodeHelperMagics(Magics):
 
     @line_magic
     def last_history(self, parameter_s=''):
+        # add functionality for -1 current behavior, -2 one before -3 another before.. up to 10?
+        # create more commands after('line of code')
+        # before('line of code')
+        # no erros option(parameter)
+        # current_history(with no errors option)
         ip = self.shell.get_ipython()
-        # last_session_id = ip.history_manager.get_last_session_id() # might be current session id not sure
         penultimate_session_id = self._get_penultimate_session_id(ip)
         session_prefix = str(penultimate_session_id)+('/')
-        # history_database = ip.history_manager.db
-        # TODO QUERY DATABASE AND GET LAST_SESSION HISTORY COMMANDS AND PRINT THEM, to make it better and possibly smarter,
-        # or use the history accesor as in the _get_penultimate_session_id method
-        # h = os.popen("ipython -c 'history -g'").read().split(':')
-        # h_3 = [x.split('\n') for x in h]
-        # hist = [x for x in h_3 if any(y.startswith(session_prefix) for y in x)]
         hist = self._get_history_for_id(ip, penultimate_session_id)
         if hist:
             for x in hist:
