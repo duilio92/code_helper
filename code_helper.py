@@ -33,8 +33,9 @@ class CodeHelperMagics(Magics):
 
     @line_magic
     def last_history(self, parameter_s=''):
+    	# before all that define commands and TESTS for those commands
         # add functionality for -1 current behavior, -2 one before -3 another before.. up to 10?
-        # create more commands after('line of code')
+        # create more commands after('line of code') or 'how_to_use'??
         # before('line of code')
         # no erros option(parameter)
         # current_history(with no errors option)
