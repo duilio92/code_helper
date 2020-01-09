@@ -3,6 +3,7 @@ from IPython.core.magic import Magics, magics_class, line_magic
 import os
 @magics_class
 class CodeHelperMagics(Magics):
+    MAX_ELEMENTS = 10
     # dont need an init atm
     # def __init__(self, *a, **kw):
     #    super(CodeHelperMagics, self).__init__(*a, **kw)
@@ -18,6 +19,18 @@ class CodeHelperMagics(Magics):
                 max2 = x[0]
         #print("max1 is:{} and max2 is:{} ".format(max1, max2))
         return max2
+    
+    def _get_position_session_id(self, ipython, position):
+        """Get the session id for the given position using the history manager."""
+        maxs = []
+        for x in range(MAX_ELEMENTS): maxs.append(0)
+        #max1, max2 = 0, 0
+        for x in ipython.history_manager.get_tail(n=100):
+            for i in range(MAX_ELEMENTS):
+                if x[0] > maxs[i]:
+                    maxs.insert(i, x[0])
+            maxs = maxs[:10]
+        return maxs[position]
 
     def _get_history_for_id(self, ipython, id):
         #import pdb; pdb.set_trace()
@@ -32,23 +45,35 @@ class CodeHelperMagics(Magics):
             return input_lines
 
     @line_magic
-    def last_history(self, parameter_s=''):
-    	# before all that define commands and TESTS for those commands
+    def get_history(self, position=None):
+        print(position)
+    	print(type(position))
+        position = int(position)
+        assert -10 <= x <= 0, "must be between -10 and 0 (inclusive)"
+        # before all that define commands and TESTS for those commands
         # add functionality for -1 current behavior, -2 one before -3 another before.. up to 10?
         # create more commands after('line of code') or 'how_to_use'??
         # before('line of code')
         # no erros option(parameter)
         # current_history(with no errors option)
+        
         ip = self.shell.get_ipython()
-        penultimate_session_id = self._get_penultimate_session_id(ip)
+        position_session_id = self._get_position_session_id(ip, position)
+        # penultimate_session_id = self._get_penultimate_session_id(ip)
         session_prefix = str(penultimate_session_id)+('/')
-        hist = self._get_history_for_id(ip, penultimate_session_id)
+
+        # hist = self._get_history_for_id(ip, penultimate_session_id)
+        hist = selg._get_history_for_id(ip, position_session_id)
         if hist:
             for x in hist:
                 print(x)  # print(x[0])
         else:
             print("No last history was found for your session.")
 
+    @line_magic
+    def last_history(self):
+        self.get_history(position=-1)
+        
 
 def load_ipython_extension(ipython):
     # The `ipython` argument is the currently active `InteractiveShell`
