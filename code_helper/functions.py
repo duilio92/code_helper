@@ -23,10 +23,10 @@ class CodeHelperMagics(Magics):
     def _get_position_session_id(self, ipython, position):
         """Get the session id for the given position using the history manager."""
         maxs = []
-        for x in range(MAX_ELEMENTS): maxs.append(0)
+        for x in range(self.MAX_ELEMENTS): maxs.append(0)
         #max1, max2 = 0, 0
         for x in ipython.history_manager.get_tail(n=100):
-            for i in range(MAX_ELEMENTS):
+            for i in range(self.MAX_ELEMENTS):
                 if x[0] > maxs[i]:
                     maxs.insert(i, x[0])
             maxs = maxs[:10]
@@ -47,9 +47,9 @@ class CodeHelperMagics(Magics):
     @line_magic
     def get_history(self, position=None):
         print(position)
-    	print(type(position))
+        print(type(position))
         position = int(position)
-        assert -10 <= x <= 0, "must be between -10 and 0 (inclusive)"
+        assert -10 <= position <= 0, "must be between -10 and 0 (inclusive)"
         # before all that define commands and TESTS for those commands
         # add functionality for -1 current behavior, -2 one before -3 another before.. up to 10?
         # create more commands after('line of code') or 'how_to_use'??
@@ -60,10 +60,10 @@ class CodeHelperMagics(Magics):
         ip = self.shell.get_ipython()
         position_session_id = self._get_position_session_id(ip, position)
         # penultimate_session_id = self._get_penultimate_session_id(ip)
-        session_prefix = str(penultimate_session_id)+('/')
+        # session_prefix = str(penultimate_session_id)+('/')
 
         # hist = self._get_history_for_id(ip, penultimate_session_id)
-        hist = selg._get_history_for_id(ip, position_session_id)
+        hist = self._get_history_for_id(ip, position_session_id)
         if hist:
             for x in hist:
                 print(x)  # print(x[0])
